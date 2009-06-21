@@ -1,0 +1,21 @@
+This is a set of scripts to make updating to the latest OpenBSD snapshot 
+a little easier. One fetches the latest snapshot binaries, and the other
+simply puts the bsd.rd boot kernel into place.
+
+Both take the option -h for more information.
+
+get_snapshot.sh
+
+  This script downloads the necessary files to update your system to
+  the latest OpenBSD snapshot. Files are downloaded from the mirror
+  set in OPENBSD_MIRROR, and their checksums are verified.
+
+
+setup_snapshot.sh
+
+  This will simply move the current /bsd.rd to /obsd.rd and copy the
+  new bsd.rd to /. This requires you to be root or use sudo
+
+* Licensing
+
+These scripts are available under a standard BSD license contained in LICENSE.
