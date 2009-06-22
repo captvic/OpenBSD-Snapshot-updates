@@ -92,7 +92,6 @@ function download_file {
   grep `cksum -a sha256 $1 | awk '{print $4}'` SHA256 > /dev/null || \
       { echo "CKSUM ERROR" ; exit 1; }
   echo "GOOD"
-exit
 }
 
 # Always fetch the new checksums from the main site
