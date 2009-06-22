@@ -1,10 +1,10 @@
 * Readme
 
 This is a set of scripts to make updating to the latest OpenBSD snapshot 
-a little easier. One fetches the latest snapshot binaries, and the other
-simply puts the bsd.rd boot kernel into place.
+a little easier. One fetches the latest snapshot binaries, others are
+used before and after upgrade for system setup.
 
-Both take the option -h for more information.
+All take the option -h for more information.
 
 get_snapshot.sh
 
