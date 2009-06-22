@@ -98,6 +98,7 @@ function download_file {
 rm SHA256
 ftp ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/$ARCH/SHA256 || exit 1
 
+download_file INSTALL.$ARCH
 download_file base$VERSION.tgz
 download_file bsd
 #download_file bsd.mp

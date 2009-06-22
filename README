@@ -14,16 +14,26 @@ get_snapshot.sh
   SHA256 is always downloaded from ftp.openbsd.org, and that the script
   will stop as soon as any checksum does not match.
 
-prepare_for_upgrade.sh
+pre_upgrade.sh
 
   This script asks to do several things you probably don't want
-  to do, but might. In order:
+  to do before upgrading, but might. In order:
     1) Move the bsd.rd in the appropriate snapshot dir to /.
        A backup is made of bsd.rd
     2) Make a backup of /etc in a dated directory.
     3) Delete X11 Modules.
-    4) Fetch latest ports.tar.gz
 
+post_upgrade.sh
+   This is to be run after performing the upgrade. The following may be done:
+    1) Perform a sysmerge using etcXX.tgz and xetcXX.tgz from in
+       download_dir, but defaults to today's snapshot directory
+    2) Use pkg_add to update all packages
+    3) Use lynx to view http://www.openbsd.org/faq/current.html
+    4) Backup ports/distfiles into the backup directory
+    5) Fetch latest ports.tar.gz
+    6) rm /usr/ports/*
+    7) Untar new ports.tar.gz in place
+    8) Restore the ports distfiles
 
 * Licensing
 

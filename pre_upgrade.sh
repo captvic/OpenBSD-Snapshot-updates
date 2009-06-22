@@ -39,7 +39,6 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo "       A backup is made of bsd.rd"
   echo "    2) Make a backup of /etc in a dated directory."
   echo "    3) Delete X11 Modules."
-  echo "    4) Fetch latest ports.tar.gz"
   echo ""
   echo "download_dir  Directory containing bsd.rd, defaults to current day's"
   echo "              directory made by get_snapshot.sh"
@@ -115,15 +114,4 @@ if [ `yes_no` ]; then
   sudo rm -rf /usr/X11R6/lib/modules/*
 else
   echo "Leaving lib modules in place"
-fi
-
-echo ""
-echo -n "Fetch the latest ports.tar.gz? [yes/NO]"
-if [ `yes_no` ]; then
-  setup_snapdir $1
-
-  cd $SNAP_DIR
-  ftp -C ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/ports.tar.gz
-else
-  echo "Skiping ports.tar.gz download"
 fi
