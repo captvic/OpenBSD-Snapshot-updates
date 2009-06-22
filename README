@@ -14,7 +14,7 @@ get_snapshot.sh
   SHA256 is always downloaded from ftp.openbsd.org, and that the script
   will stop as soon as any checksum does not match.
 
-setup_snapshot.sh
+prepare_for_upgrade.sh
 
   This script does several things you probably don't want
   to do, but might. In order:

@@ -31,7 +31,7 @@
 
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
-  echo "Usage: setup_snapshot.sh [download_dir]"
+  echo "Usage: prepare_for_upgrade.sh [download_dir]"
   echo ""
   echo "  This script does several things you probably don't want"
   echo "  to do, but might. In order:"
