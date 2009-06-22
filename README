@@ -16,13 +16,13 @@ get_snapshot.sh
 
 prepare_for_upgrade.sh
 
-  This script does several things you probably don't want
+  This script asks to do several things you probably don't want
   to do, but might. In order:
     1) Move the bsd.rd in the appropriate snapshot dir to /.
        A backup is made of bsd.rd
     2) Make a backup of /etc in a dated directory.
-    3) Optionally delete X11 Modules.
-    4) Optionally fetch latest ports.tar.gz
+    3) Delete X11 Modules.
+    4) Fetch latest ports.tar.gz
 
 
 * Licensing

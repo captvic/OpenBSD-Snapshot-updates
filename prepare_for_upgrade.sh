@@ -33,49 +33,18 @@
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo "Usage: prepare_for_upgrade.sh [download_dir]"
   echo ""
-  echo "  This script does several things you probably don't want"
+  echo "  This script asks to do several things you probably don't want"
   echo "  to do, but might. In order:"
   echo "    1) Move the bsd.rd in the appropriate snapshot dir to /."
   echo "       A backup is made of bsd.rd"
   echo "    2) Make a backup of /etc in a dated directory."
-  echo "    3) Optionally delete X11 Modules."
-  echo "    4) Optionally fetch latest ports.tar.gz"
+  echo "    3) Delete X11 Modules."
+  echo "    4) Fetch latest ports.tar.gz"
   echo ""
   echo "download_dir  Directory containing bsd.rd, defaults to current day's"
   echo "              directory made by get_snapshot.sh"
   echo ""
   exit
-fi
-
-if [ -n "$1" ]; then
-  SNAP_DIR=$1
-else
-  SNAP_DIR=snapshot_`date "+%m%d%y"`
-  echo "No directory specified, using: " $SNAP_DIR
-fi 
-
-if [ ! -d $SNAP_DIR ]; then
-  echo "ERROR: The directory does not exist:" $SNAP_DIR
-  exit 1
-fi
-
-if [ -f "$SNAP_DIR/bsd.rd" ]; then
-  sudo mv /bsd.rd /obsd.rd
-  sudo cp $SNAP_DIR/bsd.rd /
-else
-  echo "ERROR: $SNAP_DIR did not contain bsd.rd"
-  exit 1
-fi
-
-BK_DIR=backup_`date "+%m%d%y"`
-
-if [ -d $BK_DIR ]; then
-  echo "WARNING: The directory exists:" $BK_DIR
-else
-  mkdir $BK_DIR
-  cd $BK_DIR
-  sudo tar czf etc.tgz -C / etc && echo "Backup successful.."
-  cd -
 fi
 
 function yes_no {
@@ -86,8 +55,61 @@ function yes_no {
   # see man TEST(1)
 }
 
+function setup_snapdir {
+  if [ -n "$1" ]; then
+    SNAP_DIR=$1
+  else
+    SNAP_DIR=snapshot_`date "+%m%d%y"`
+    echo "No directory specified, using: " $SNAP_DIR
+  fi 
+
+  if [ ! -d $SNAP_DIR ]; then
+    echo "ERROR: The directory does not exist:" $SNAP_DIR
+    exit 1
+  fi
+}
+
+function backup_etc {
+  BK_DIR=backup_`date "+%m%d%y"`
+
+  if [ -d $BK_DIR ]; then
+    echo "WARNING: The directory exists:" $BK_DIR
+  else
+    mkdir $BK_DIR
+  fi
+
+  cd $BK_DIR
+  echo -n "Making backup of /etc "
+  sudo tar czf etc.tgz -C / etc && echo "Backup successful.."
+  cd - > /dev/null
+}
+
 echo ""
-echo "Do you want to remove X11R6 modules? [yes/NO]"
+echo -n "Move bsd.rd to /? [yes/NO]"
+if [ `yes_no` ]; then
+  setup_snapdir
+
+  if [ -f "$SNAP_DIR/bsd.rd" ]; then
+    sudo mv /bsd.rd /obsd.rd
+    sudo cp $SNAP_DIR/bsd.rd /
+  else
+    echo "ERROR: $SNAP_DIR did not contain bsd.rd"
+    exit 1
+  fi
+else
+  echo "skipping bsd.rd"
+fi
+
+echo ""
+echo -n "Backup /etc? [yes/NO]"
+if [ `yes_no` ]; then
+  backup_etc  
+else
+  echo "Skipping /etc backup"
+fi
+
+echo ""
+echo -n "Remove X11R6 modules? [yes/NO]"
 if [ `yes_no` ]; then
   echo "Deleting them..."
   sudo rm -rf /usr/X11R6/lib/modules/*
@@ -96,10 +118,12 @@ else
 fi
 
 echo ""
-echo "Do you want to fetch the latest ports.tar.gz? [yes/NO]"
-
+echo -n "Fetch the latest ports.tar.gz? [yes/NO]"
 if [ `yes_no` ]; then
-  # We know SNAP_DIR exists from earlier
+  setup_snapdir
+
   cd $SNAP_DIR
   ftp -C ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/ports.tar.gz
+else
+  echo "Skiping ports.tar.gz download"
 fi
