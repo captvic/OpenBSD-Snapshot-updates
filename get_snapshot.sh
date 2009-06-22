@@ -88,10 +88,17 @@ cd $SNAP_DIR
 
 function download_file {
   ftp -C $OPENBSD_MIRROR/snapshots/$ARCH/$1 || exit 1
+  echo -n "Checking SHA256 for $1: "
+  grep `cksum -a sha256 $1 | awk '{print $4}'` SHA256 > /dev/null || \
+      { echo "CKSUM ERROR" ; exit 1; }
+  echo "GOOD"
+exit
 }
 
+# Always fetch the new checksums from the main site
 rm SHA256
-download_file SHA256
+ftp ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/$ARCH/SHA256 || exit 1
+
 download_file base$VERSION.tgz
 download_file bsd
 #download_file bsd.mp
@@ -106,12 +113,3 @@ download_file xetc$VERSION.tgz
 download_file xfont$VERSION.tgz
 download_file xserv$VERSION.tgz
 download_file xshare$VERSION.tgz
-
-for X in `ls -1 *tgz bsd*`                               
-do
-  echo -n "Checking SHA256 for $X: "
-  grep `cksum -a sha256 $X | awk '{print $4}'` SHA256 > /dev/null || \
-      { echo "CKSUM ERROR" ; exit 1; }
-  echo "GOOD"
-done
-
