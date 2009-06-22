@@ -10,12 +10,20 @@ get_snapshot.sh
 
   This script downloads the necessary files to update your system to
   the latest OpenBSD snapshot. Files are downloaded from the mirror
-  set in OPENBSD_MIRROR, and their checksums are verified.
+  set in OPENBSD_MIRROR, and their checksums are verified. Note that
+  SHA256 is always downloaded from ftp.openbsd.org, and that the script
+  will stop as soon as any checksum does not match.
 
 setup_snapshot.sh
 
-  This will simply move the current /bsd.rd to /obsd.rd and copy the
-  new bsd.rd to /. This requires you to be root or use sudo
+  This script does several things you probably don't want
+  to do, but might. In order:
+    1) Move the bsd.rd in the appropriate snapshot dir to /.
+       A backup is made of bsd.rd
+    2) Make a backup of /etc in a dated directory.
+    3) Optionally delete X11 Modules.
+    4) Optionally fetch latest ports.tar.gz
+
 
 * Licensing
 

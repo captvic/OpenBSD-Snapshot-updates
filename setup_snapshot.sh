@@ -33,8 +33,13 @@
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo "Usage: setup_snapshot.sh [download_dir]"
   echo ""
-  echo "  This will simply move the current /bsd.rd to /obsd.rd and copy the"
-  echo "  new bsd.rd to /. This requires you to be root or use sudo"
+  echo "  This script does several things you probably don't want"
+  echo "  to do, but might. In order:"
+  echo "    1) Move the bsd.rd in the appropriate snapshot dir to /."
+  echo "       A backup is made of bsd.rd"
+  echo "    2) Make a backup of /etc in a dated directory."
+  echo "    3) Optionally delete X11 Modules."
+  echo "    4) Optionally fetch latest ports.tar.gz"
   echo ""
   echo "download_dir  Directory containing bsd.rd, defaults to current day's"
   echo "              directory made by get_snapshot.sh"
@@ -60,4 +65,41 @@ if [ -f "$SNAP_DIR/bsd.rd" ]; then
 else
   echo "ERROR: $SNAP_DIR did not contain bsd.rd"
   exit 1
+fi
+
+BK_DIR=backup_`date "+%m%d%y"`
+
+if [ -d $BK_DIR ]; then
+  echo "WARNING: The directory exists:" $BK_DIR
+else
+  mkdir $BK_DIR
+  cd $BK_DIR
+  sudo tar czf etc.tgz -C / etc && echo "Backup successful.."
+  cd -
+fi
+
+function yes_no {
+  read
+  echo -n $REPLY | grep -i yes
+
+  # This works because if [ ]  will not execute but if [ STRING ] will.
+  # see man TEST(1)
+}
+
+echo ""
+echo "Do you want to remove X11R6 modules? [yes/NO]"
+if [ `yes_no` ]; then
+  echo "Deleting them..."
+  sudo rm -rf /usr/X11R6/lib/modules/*
+else
+  echo "Leaving lib modules in place"
+fi
+
+echo ""
+echo "Do you want to fetch the latest ports.tar.gz? [yes/NO]"
+
+if [ `yes_no` ]; then
+  # We know SNAP_DIR exists from earlier
+  cd $SNAP_DIR
+  ftp -C ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/ports.tar.gz
 fi
