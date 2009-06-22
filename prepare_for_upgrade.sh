@@ -64,8 +64,8 @@ function setup_snapdir {
   fi 
 
   if [ ! -d $SNAP_DIR ]; then
-    echo "ERROR: The directory does not exist:" $SNAP_DIR
-    exit 1
+    echo "WARNING: The directory does not exist:" $SNAP_DIR
+    mkdir $SNAP_DIR
   fi
 }
 
@@ -87,7 +87,7 @@ function backup_etc {
 echo ""
 echo -n "Move bsd.rd to /? [yes/NO]"
 if [ `yes_no` ]; then
-  setup_snapdir
+  setup_snapdir $1
 
   if [ -f "$SNAP_DIR/bsd.rd" ]; then
     sudo mv /bsd.rd /obsd.rd
@@ -120,7 +120,7 @@ fi
 echo ""
 echo -n "Fetch the latest ports.tar.gz? [yes/NO]"
 if [ `yes_no` ]; then
-  setup_snapdir
+  setup_snapdir $1
 
   cd $SNAP_DIR
   ftp -C ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/ports.tar.gz
