@@ -38,7 +38,7 @@ ARCH=i386
 # Shouldn't have to play beyond here
 #############################################################################
 
-SNAP_DIR=snapshot_`date "+%m%d%y"`
+. ./includes.sh
 
 function mirror_message {
   echo "  $ export OPENBSD_MIRROR=\"ftp://mirror.openbsd.org/pub/OpenBSD\""
@@ -69,13 +69,6 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   exit
 fi
 
-
-if [ -d $SNAP_DIR ]; then
-  echo "WARNING: Download directory exists:" $SNAP_DIR
-else 
-  mkdir "$SNAP_DIR"
-fi
-
 if [ ! -n $OPENBSD_MIRROR ]; then
   echo "ERROR: Make sure you have \$OPENBSD_MIRROR set by doing something like:"
   echo ""
@@ -83,8 +76,6 @@ if [ ! -n $OPENBSD_MIRROR ]; then
  
   exit 1
 fi
-
-cd $SNAP_DIR
 
 function download_file {
   ftp -C $OPENBSD_MIRROR/snapshots/$ARCH/$1 || exit 1
@@ -94,22 +85,38 @@ function download_file {
   echo "GOOD"
 }
 
+function download_x_file {
+  if [ $UPDATE_X ]; then
+    download_file $1
+  else
+    echo "Skipping $1"
+  fi
+}
+
+echo "Update X? [yes/NO] "
+if [ `yes_no` ]; then
+  UPDATE_X=yes
+fi
+
+setup_snapdir
+cd $SNAP_DIR
+
 # Always fetch the new checksums from the main site
 rm SHA256
 ftp ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/$ARCH/SHA256 || exit 1
 
 download_file INSTALL.$ARCH
+download_file etc$VERSION.tgz
+download_x_file xetc$VERSION.tgz
 download_file base$VERSION.tgz
 download_file bsd
 #download_file bsd.mp
 download_file bsd.rd
 download_file comp$VERSION.tgz
-download_file etc$VERSION.tgz
 download_file game$VERSION.tgz
 download_file man$VERSION.tgz
 download_file misc$VERSION.tgz
-download_file xbase$VERSION.tgz
-download_file xetc$VERSION.tgz
-download_file xfont$VERSION.tgz
-download_file xserv$VERSION.tgz
-download_file xshare$VERSION.tgz
+download_x_file xbase$VERSION.tgz
+download_x_file xfont$VERSION.tgz
+download_x_file xserv$VERSION.tgz
+download_x_file xshare$VERSION.tgz

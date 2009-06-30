@@ -35,6 +35,9 @@ post_upgrade.sh
     7) Untar new ports.tar.gz in place
     8) Restore the ports distfiles
 
+include.sh
+    This is included by other scripts to minimize redundant code.
+
 * Licensing
 
 These scripts are available under a standard BSD license contained in LICENSE.

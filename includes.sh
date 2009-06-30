@@ -29,68 +29,35 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-. ./includes.sh
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
-  echo "Usage: prepare_for_upgrade.sh [download_dir]"
+  echo "Usage: includes.sh"
   echo ""
-  echo "  This script asks to do several things you probably don't want"
-  echo "  to do, but might. In order:"
-  echo "    1) Move the bsd.rd in the appropriate snapshot dir to /."
-  echo "       A backup is made of bsd.rd"
-  echo "    2) Make a backup of /etc in a dated directory."
-  echo "    3) Delete X11 Modules."
-  echo ""
-  echo "download_dir  Directory containing bsd.rd, defaults to current day's"
-  echo "              directory made by get_snapshot.sh"
+  echo "  Don't run this; it is meant to be included by other scripts."
   echo ""
   exit
 fi
 
-function backup_etc {
-  BK_DIR=backup_`date "+%m%d%y"`
+function yes_no {
+  read
+  echo -n $REPLY | grep -i yes
 
-  if [ -d $BK_DIR ]; then
-    echo "WARNING: The directory exists:" $BK_DIR
-  else
-    mkdir $BK_DIR
-  fi
-
-  cd $BK_DIR
-  echo -n "Making backup of /etc "
-  sudo tar czf etc.tgz -C / etc && echo "Backup successful.."
-  cd - > /dev/null
+  # This works because if [ ]  will not execute but if [ STRING ] will.
+  # see man TEST(1)
 }
 
-echo ""
-echo -n "Move bsd.rd to /? [yes/NO]"
-if [ `yes_no` ]; then
-  setup_snapdir $1
-
-  if [ -f "$SNAP_DIR/bsd.rd" ]; then
-    sudo mv /bsd.rd /obsd.rd
-    sudo cp $SNAP_DIR/bsd.rd /
+function setup_snapdir {
+  if [ -n "$1" ]; then
+    SNAP_DIR=$1
   else
-    echo "ERROR: $SNAP_DIR did not contain bsd.rd"
-    exit 1
+    SNAP_DIR=snapshot_`date "+%m%d%y"`
+    echo "No directory specified, using: " $SNAP_DIR
+  fi 
+
+  if [ ! -d $SNAP_DIR ]; then
+    echo "WARNING: The directory does not exist:" $SNAP_DIR
+    mkdir $SNAP_DIR
   fi
-else
-  echo "skipping bsd.rd"
-fi
+}
 
-echo ""
-echo -n "Backup /etc? [yes/NO]"
-if [ `yes_no` ]; then
-  backup_etc  
-else
-  echo "Skipping /etc backup"
-fi
-
-echo ""
-echo -n "Remove X11R6 modules? [yes/NO]"
-if [ `yes_no` ]; then
-  echo "Deleting them..."
-  sudo rm -rf /usr/X11R6/lib/modules/*
-else
-  echo "Leaving lib modules in place"
-fi
+echo "Includes loaded.."

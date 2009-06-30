@@ -33,6 +33,9 @@ VERSION=46
 
 ############################################################################
 
+. ./includes.sh
+
+
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo "Usage: post_upgrade.sh [download_dir]"
   echo ""
@@ -54,28 +57,6 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo ""
   exit
 fi
-
-function yes_no {
-  read
-  echo -n $REPLY | grep -i yes
-
-  # This works because if [ ]  will not execute but if [ STRING ] will.
-  # see man TEST(1)
-}
-
-function setup_snapdir {
-  if [ -n "$1" ]; then
-    SNAP_DIR=$1
-  else
-    SNAP_DIR=snapshot_`date "+%m%d%y"`
-    echo "No directory specified, using: " $SNAP_DIR
-  fi
-
-  if [ ! -d $SNAP_DIR ]; then
-    echo "WARNING: The directory does not exist:" $SNAP_DIR
-    mkdir $SNAP_DIR
-  fi
-}
 
 echo -n "Perform sysmerge? [yes/NO]"
 if [ `yes_no` ]; then
@@ -158,6 +139,7 @@ if [ `yes_no` ]; then
 
   cd $SNAP_DIR
   ftp -C ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/ports.tar.gz
+  cd - > /dev/null
 else
   echo "Skiping ports.tar.gz download"
 fi
