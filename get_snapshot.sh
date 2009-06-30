@@ -29,16 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# Settings
-VERSION=46
-ARCH=i386
-# make sure OPENBSD_MIRROR is set and exported
-
-#############################################################################
-# Shouldn't have to play beyond here
 #############################################################################
 
-. ./includes.sh
+. ./settings.config
 
 function mirror_message {
   echo "  $ export OPENBSD_MIRROR=\"ftp://mirror.openbsd.org/pub/OpenBSD\""
@@ -68,6 +61,8 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   mirror_message
   exit
 fi
+
+. ./includes.sh
 
 if [ ! -n $OPENBSD_MIRROR ]; then
   echo "ERROR: Make sure you have \$OPENBSD_MIRROR set by doing something like:"

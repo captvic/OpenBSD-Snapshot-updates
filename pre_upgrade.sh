@@ -29,7 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-. ./includes.sh
+##########################################################################
+
+. ./settings.config
 
 if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo "Usage: prepare_for_upgrade.sh [download_dir]"
@@ -46,6 +48,8 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   echo ""
   exit
 fi
+
+. ./includes.sh
 
 function backup_etc {
   BK_DIR=backup_`date "+%m%d%y"`
