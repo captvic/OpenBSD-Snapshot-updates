@@ -58,7 +58,7 @@ if [ "$1" = "-h" -o "$1" = "--help" ]; then
   exit
 fi
 
-echo -n "Perform sysmerge? [yes/NO]"
+echo -n "Perform sysmerge? [yes/NO] "
 if [ `yes_no` ]; then
   setup_snapdir $1
 
@@ -83,7 +83,7 @@ else
 fi
 
 echo ""
-echo -n "Update packages? [yes/NO]"
+echo -n "Update packages? [yes/NO] "
 if [ `yes_no` ]; then
   sudo pkg_add -ui -F update -F updatedepends
 else
@@ -91,7 +91,7 @@ else
 fi
 
 echo ""
-echo -n "Take a look at faq/current.html? [yes/NO]"
+echo -n "Take a look at faq/current.html? [yes/NO] "
 if [ `yes_no` ]; then
   lynx http://www.openbsd.org/faq/current.html
 else
@@ -125,7 +125,17 @@ function restore_ports_distfiles {
 }
 
 echo ""
-echo -n "Backup /usr/ports/distfiles? [yes/NO]"
+echo -n "MAKEDEV all? [yes/NO] "
+if [ `yes_no` ]; then
+  cd /dev
+  sudo ./MAKEDEV all
+  cd - > /dev/null
+else
+  echo "Skipping MAKEDEV"
+fi
+
+echo ""
+echo -n "Backup /usr/ports/distfiles? [yes/NO] "
 if [ `yes_no` ]; then
   backup_ports_distfiles
 else
@@ -133,7 +143,7 @@ else
 fi
 
 echo ""
-echo -n "Fetch the latest ports.tar.gz? [yes/NO]"
+echo -n "Fetch the latest ports.tar.gz? [yes/NO] "
 if [ `yes_no` ]; then
   setup_snapdir $1
 
@@ -145,7 +155,7 @@ else
 fi
 
 echo ""
-echo -n "Remove old ports? [yes/NO]"
+echo -n "Remove old ports? [yes/NO] "
 if [ `yes_no` ]; then
   sudo rm -rf /usr/ports/*
 else
@@ -153,9 +163,9 @@ else
 fi
 
 echo ""
-echo -n "Untar new ports? [yes/NO]"
+echo -n "Untar new ports? [yes/NO] "
 if [ `yes_no` ]; then
-  setup_snapdir
+  setup_snapdir $1
   if [ -f $SNAP_DIR/ports.tar.gz ]; then
     echo "Untarring ports.tar.gz"
     sudo tar xzf $SNAP_DIR/ports.tar.gz -C /usr
@@ -167,7 +177,7 @@ else
 fi
 
 echo ""
-echo -n "Restore /usr/ports/distfiles? [yes/NO]"
+echo -n "Restore /usr/ports/distfiles? [yes/NO] "
 if [ `yes_no` ]; then
   restore_ports_distfiles
 else

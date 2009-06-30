@@ -93,12 +93,13 @@ function download_x_file {
   fi
 }
 
+echo ""
 echo "Update X? [yes/NO] "
 if [ `yes_no` ]; then
   UPDATE_X=yes
 fi
 
-setup_snapdir
+setup_snapdir $1
 cd $SNAP_DIR
 
 # Always fetch the new checksums from the main site
