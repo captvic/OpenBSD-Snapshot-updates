@@ -85,7 +85,8 @@ else
 fi
 
 echo "Installing new bsd"
-sudo rm /obsd ; ln /bsd /obsd && cp bsd /nbsd && mv /nbsd /bsd
+sudo rm /obsd 
+sudo ln /bsd /obsd && sudo cp bsd /nbsd && sudo mv /nbsd /bsd
 
 echo "Installing new bsd.rd"
 sudo cp bsd.rd /

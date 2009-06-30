@@ -4,6 +4,8 @@ This is a set of scripts to make updating to the latest OpenBSD snapshot
 a little easier. One fetches the latest snapshot binaries, others are
 used before and after upgrade for system setup.
 
+Please edit settings.config for your target ARCH and VERSION
+
 All take the option -h for more information.
 
 get_snapshot.sh
@@ -34,6 +36,12 @@ post_upgrade.sh
     6) rm /usr/ports/*
     7) Untar new ports.tar.gz in place
     8) Restore the ports distfiles
+
+binary_update.sh
+    Use this when you do not have access to the console of the machine. It
+    updates the entire system in place, and then reboots. It follows the
+    recommendations from the upgrade FAQ. Note that this is not the recommended
+    upgrade path.
 
 include.sh
     This is included by other scripts to minimize redundant code.
