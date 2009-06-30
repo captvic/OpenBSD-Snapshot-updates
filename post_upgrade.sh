@@ -57,6 +57,17 @@ fi
 
 . ./includes.sh
 
+echo ""
+echo -n "MAKEDEV all? [yes/NO] "
+if [ `yes_no` ]; then
+  cd /dev
+  sudo ./MAKEDEV all
+  cd - > /dev/null
+else
+  echo "Skipping MAKEDEV"
+fi
+
+echo ""
 echo -n "Perform sysmerge? [yes/NO] "
 if [ `yes_no` ]; then
   setup_snapdir $1
@@ -122,16 +133,6 @@ function restore_ports_distfiles {
     echo "ERROR: The distfiles do not exist."
   fi
 }
-
-echo ""
-echo -n "MAKEDEV all? [yes/NO] "
-if [ `yes_no` ]; then
-  cd /dev
-  sudo ./MAKEDEV all
-  cd - > /dev/null
-else
-  echo "Skipping MAKEDEV"
-fi
 
 echo ""
 echo -n "Backup /usr/ports/distfiles? [yes/NO] "
