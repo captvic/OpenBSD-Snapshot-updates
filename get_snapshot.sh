@@ -76,7 +76,7 @@ function download_file {
   ftp -C $OPENBSD_MIRROR/snapshots/$ARCH/$1 || exit 1
   echo -n "Checking SHA256 for $1: "
   grep `cksum -a sha256 $1 | awk '{print $4}'` SHA256 > /dev/null || \
-      { echo "CKSUM ERROR" ; exit 1; }
+      { echo "CKSUM ERROR" ; rm $1; exit 1; }
   echo "GOOD"
 }
 
@@ -85,6 +85,22 @@ function download_x_file {
     download_file $1
   else
     echo "Skipping $1"
+  fi
+}
+
+function check_bsd {
+  echo -n "Checking bsd: "
+  if [ `diff bsd /bsd | awk '{print $1}'` ]; then
+    echo "DIFFERENT"
+  else
+    echo "MATCHES"
+    echo ""
+    echo "Downloaded bsd matches /bsd, proceed anyway? [yes/NO] "
+    if [ `yes_no` ]; then
+      echo "Ignoring problem, pushing on."
+    else
+      exit
+    fi
   fi
 }
 
@@ -97,15 +113,19 @@ fi
 setup_snapdir $1
 cd $SNAP_DIR
 
-# Always fetch the new checksums from the main site
-rm SHA256
-ftp ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/$ARCH/SHA256 || exit 1
+# Always fetch the checksums from the main site
+if [ ! -f SHA256 ]; then
+  ftp ftp://ftp.openbsd.org/pub/OpenBSD/snapshots/$ARCH/SHA256 || exit 1
+fi
 
-download_file INSTALL.$ARCH
 download_file etc$VERSION.tgz
+download_file INSTALL.$ARCH
 download_x_file xetc$VERSION.tgz
-download_file base$VERSION.tgz
 download_file bsd
+
+check_bsd
+
+download_file base$VERSION.tgz
 #download_file bsd.mp
 download_file bsd.rd
 download_file comp$VERSION.tgz

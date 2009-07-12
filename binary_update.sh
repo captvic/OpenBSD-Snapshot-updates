@@ -54,21 +54,15 @@ else
   exit
 fi
 
-echo ""
-echo "Update X? [yes/NO] "
-if [ `yes_no` ]; then
-  UPDATE_X=yes
-fi
-
-if [ $UPDATE_X ]; then
-   if [ -f $SNAP_DIR/xserv$VERSION.tgz -a \
-        -f $SNAP_DIR/xfont$VERSION.tgz -a \
-        -f $SNAP_DIR/xshare$VERSION.tgz -a \
-        -f $SNAP_DIR/xbase$VERSION.tgz ]; then
-     echo "X accounted for.."
-   else
-     echo "ERROR: The directory is missing X files: " $SNAP_DIR
-   fi
+if [ -f $SNAP_DIR/xserv$VERSION.tgz -a \
+     -f $SNAP_DIR/xfont$VERSION.tgz -a \
+     -f $SNAP_DIR/xshare$VERSION.tgz -a \
+     -f $SNAP_DIR/xbase$VERSION.tgz ]; then
+   echo "X accounted for.."
+   UPDATE_X=yes
+else
+   echo "WARNING: The directory is missing X files: " $SNAP_DIR
+   echo "         X will not be installed."
 fi
 
 if [ -f $SNAP_DIR/bsd -a \
