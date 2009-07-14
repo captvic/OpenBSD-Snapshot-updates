@@ -67,7 +67,7 @@ function backup_etc {
 }
 
 echo ""
-echo -n "Move bsd.rd to /? [yes/NO]"
+echo -n "Move bsd.rd to /? [yes/NO] "
 if [ `yes_no` ]; then
   setup_snapdir $1
 
@@ -83,7 +83,7 @@ else
 fi
 
 echo ""
-echo -n "Backup /etc? [yes/NO]"
+echo -n "Backup /etc? [yes/NO] "
 if [ `yes_no` ]; then
   backup_etc  
 else
@@ -91,7 +91,7 @@ else
 fi
 
 echo ""
-echo -n "Remove X11R6 modules? [yes/NO]"
+echo -n "Remove X11R6 modules? [yes/NO] "
 if [ `yes_no` ]; then
   echo "Deleting them..."
   sudo rm -rf /usr/X11R6/lib/modules/*
