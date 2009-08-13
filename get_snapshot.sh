@@ -73,7 +73,7 @@ if [ ! -n $OPENBSD_MIRROR ]; then
 fi
 
 function download_file {
-  ftp -C $OPENBSD_MIRROR/snapshots/$ARCH/$1 || exit 1
+  ftp -C $OPENBSD_MIRROR/snapshots/$ARCH/$1
   echo -n "Checking SHA256 for $1: "
   grep `cksum -a sha256 $1 | awk '{print $4}'` SHA256 > /dev/null || \
       { echo "CKSUM ERROR" ; rm $1; exit 1; }
