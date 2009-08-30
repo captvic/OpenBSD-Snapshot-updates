@@ -75,7 +75,7 @@ if [ `yes_no` ]; then
   if [ -f "$SNAP_DIR/etc$VERSION.tgz" ]; then
     echo ""
     echo "Updating etc$VERSION.tgz"
-    sudo sysmerge -as $SNAP_DIR/etc$VERSION.tgz
+    sudo sysmerge -bs $SNAP_DIR/etc$VERSION.tgz
   else
     echo "ERROR: $SNAP_DIR did not contain etc$VERSION.tgz"
     exit 1
@@ -84,7 +84,7 @@ if [ `yes_no` ]; then
   if [ -f "$SNAP_DIR/xetc$VERSION.tgz" ]; then
     echo ""
     echo "Updating xetc$VERSION.tgz"
-    sudo sysmerge -ax $SNAP_DIR/xetc$VERSION.tgz
+    sudo sysmerge -bx $SNAP_DIR/xetc$VERSION.tgz
   else
     echo "WARNING: $SNAP_DIR did not contain xetc$VERSION.tgz, skipping"
   fi
